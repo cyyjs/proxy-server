@@ -1,4 +1,4 @@
-import { certGenerntor } from './certManager'
+const CertManager = require('./certManager')
 
 class ProxyServe {
   constructor (options) {
@@ -11,7 +11,9 @@ class ProxyServe {
       ...options
     }
     this.middleware = []
-    certGenerntor()
+    this.certManager = new CertManager({
+      rootDirPath: this.options.dirPath
+    })
   }
   /**
    * 自定义中间件
@@ -24,11 +26,8 @@ class ProxyServe {
   /**
    * 获取证书路径
    */
-  getCertPath () {
-    return {
-      keys: this.options.keys,
-      cert: this.options.cert
-    }
+  async getCertPath () {
+    return this.certManager.generateRootCA()
   }
 }
 
